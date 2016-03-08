@@ -1,0 +1,13 @@
+{
+  "name": "node-config-sets-example",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Configuration sets for node.js programs.",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "node-config-sets": "*"
+  }
+}
