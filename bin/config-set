@@ -1,0 +1,83 @@
+#!/usr/bin/env node
+
+const utils = require('../utils');
+const spawn = require('child_process').spawn;
+const fs = require('fs');
+const _ = require('lodash');
+const os = require('os');
+const path = require('path');
+
+const args = process.argv.slice(2);
+
+if (args.length == 0) {
+  const usage = `
+  config-set create <filename>
+  config-set edit filename
+  config-set show filename
+  `;
+  console.log(usage);
+} else if (args[0] === "create") {
+  
+  const dst = args.length > 1 ? args[1]:'config.json';
+  const parts = path.basename(dst).split('.');
+  const filename = [parts[parts.length-2],'tmp',parts[parts.length-1]].join('.');
+
+  open_editor(filename, (code, signal) => {
+    utils.encrypt_file(filename,dst,(err) => {
+      if (err) {
+        console.error(err);
+        process.exit(-1);
+      }  else {
+        fs.unlink(filename,(err)=>{if(err) console.log(err);});
+      }
+    });
+  });
+} else if(args[0] === "edit") {
+  
+  const filename = args.length > 1 ? args[1]:false;
+  const tempfile = filename+'.tmp.json';
+
+  if (!filename) {
+    console.error('provide filename to edit');
+  } else {
+
+    utils.decrypt_file(filename,(err,config) => {
+      if (err) {
+        console.error('unable to decrypt file:',err);
+      } else {
+        fs.writeFile(tempfile,JSON.stringify(config,null,4),(err) => {
+          if (err) {
+            console.error('failed to write tmp file',err);
+          } else {
+            open_editor(tempfile,(code,signal) => {
+              utils.encrypt_file(tempfile,filename,(err) => {
+                if (err) {
+                  console.error(err);
+                }
+              });
+            })
+          }
+        });
+      }
+    });
+  }
+} else if (args[0] === "show") {
+  const filename = args.length > 1 ? args[1]:false;
+  if (!filename) {
+    console.error('provide a file');
+    process.exit(-1)
+  }
+  utils.decrypt_file(filename,(err,config) => {
+    if (err) {
+      console.error('unable to decrypt file:',err);
+    } else {
+      console.log(JSON.stringify(config,null,4));
+    }
+  });
+}
+
+function open_editor(filename,done) {
+  const editor = process.env.VISUAL || process.env.EDITOR;
+  const p = spawn(editor, [filename], { stdio: 'inherit' });
+  p.on('exit', done);
+}
