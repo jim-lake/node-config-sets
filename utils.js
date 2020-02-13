@@ -58,7 +58,7 @@ function decrypt_config(data,key) {
 function decrypt_aes_key(encrypted_aes_key,kms_key_region,done) {
   let key = false;
   const params = {
-    CiphertextBlob: Buffer.alloc(encrypted_aes_key, 'base64'),
+    CiphertextBlob: Buffer.from(encrypted_aes_key, 'base64'),
   };
 
   AWS.config.update({region: kms_key_region});
