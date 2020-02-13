@@ -26,6 +26,6 @@
   "dependencies": {
     "aws-sdk": "^2.617.0",
     "deep-extend": "^0.6.0",
-    "lodash": "3.x"
+    "lodash": "^4.17.15"
   }
 }
