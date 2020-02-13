@@ -16,11 +16,16 @@
   "author": {
     "name": "Jim Lake"
   },
-  "contributors": [{"name":"Yanko Bolanos","email":"y@rem7.com"}],
+  "contributors": [
+    {
+      "name": "Yanko Bolanos",
+      "email": "y@rem7.com"
+    }
+  ],
   "license": "MIT",
   "dependencies": {
-    "aws-sdk": "^2.192.0",
-    "deep-extend": "*",
+    "aws-sdk": "^2.617.0",
+    "deep-extend": "^0.6.0",
     "lodash": "3.x"
   }
 }
