@@ -26,7 +26,7 @@ function tryRequire(file,rootdir) {
 }
 
 function encrypt(text,password){
-  const iv = new Buffer(16);
+  const iv = new Buffer.alloc(16);
   iv.fill(0);
   const cipher = crypto.createCipheriv(g_crypto_algo,password,iv);
   let encrypted = cipher.update(text,'utf8','hex')
@@ -41,7 +41,7 @@ function encrypt_config(config,key) {
 }
 
 function decrypt(encrypted,key){
-  const iv = new Buffer(16);
+  const iv = new Buffer.alloc(16);
   iv.fill(0);
   const decipher = crypto.createDecipheriv(g_crypto_algo,key,iv);
   let decrypted = decipher.update(encrypted,'hex','utf8');
@@ -58,7 +58,7 @@ function decrypt_config(data,key) {
 function decrypt_aes_key(encrypted_aes_key,kms_key_region,done) {
   let key = false;
   const params = {
-    CiphertextBlob: Buffer(encrypted_aes_key, 'base64'),
+    CiphertextBlob: Buffer.alloc(encrypted_aes_key, 'base64'),
   };
 
   AWS.config.update({region: kms_key_region});

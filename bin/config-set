@@ -12,6 +12,7 @@ const args = process.argv.slice(2);
 if (args.length == 0) {
   const usage = `
   config-set create <filename>
+  config-set encrypt <filename>
   config-set edit filename
   config-set show filename
   `;
@@ -32,6 +33,23 @@ if (args.length == 0) {
       }
     });
   });
+} else if(args[0] === "encrypt") {
+  const src = args.length > 1 ? args[1]:false;
+  if(!src) {
+    console.error('provide filename to encrypt')
+  } else { 
+    const parts = src.split('.');
+    const dst = [parts.slice(0,parts.length-1),'encrypted',parts[parts.length-1]]
+      .flat()
+      .join('.');
+    utils.encrypt_file(src,dst,(err) => {
+      if(err) {
+        console.error(err);
+      } else {
+        console.log(`${src} -> ${dst}`);
+      }
+    });
+  }
 } else if(args[0] === "edit") {
   
   const filename = args.length > 1 ? args[1]:false;
