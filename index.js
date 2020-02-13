@@ -99,23 +99,29 @@ class Config {
       if (!configSet) {
         configSet = process.env.NODE_CONFIG_SET || process.env.NODE_ENV || "dev";
       }
-      
-      const config_encrypted = utils.tryRequire('config/config.' + configSet + '.encrypted.json',rootdir);
-      const {encrypted_aes_key,kms_key_region} = config_encrypted;
 
-      if (encrypted_aes_key) {
-        utils.decrypt_aes_key(encrypted_aes_key,kms_key_region,function(err, key) {
-          if (!err) {
-            config = utils.decrypt_config(config_encrypted.encrypted_data,key,config_encrypted.iv);
-            _.each(_this,(v,k) => {
-              delete _this[k];
-            });
-            deepExtend(_this,config);
-          }
-          decrypt_done(err);
-        });
+      // give preference to unencrypted files, better for development
+      const config_unencrypted = utils.tryRequire('config/config.' + configSet + '.json',rootdir);
+      if(Object.keys(config_unencrypted).length) {
+        deepExtend(_this,config_unencrypted);
+        decrypt_done();
       } else {
-        decrypt_done('encrypted_aes_key not found');
+        const config_encrypted = utils.tryRequire('config/config.' + configSet + '.encrypted.json',rootdir);
+        const {encrypted_aes_key,kms_key_region} = config_encrypted;
+        if (encrypted_aes_key) {
+          utils.decrypt_aes_key(encrypted_aes_key,kms_key_region,function(err, key) {
+            if (!err) {
+              config = utils.decrypt_config(config_encrypted.encrypted_data,key,config_encrypted.iv);
+              _.each(_this,(v,k) => {
+                delete _this[k];
+              });
+              deepExtend(_this,config);
+            }
+            decrypt_done(err);
+          });
+        } else {
+          decrypt_done('encrypted_aes_key not found');
+        }
       }
     }
   }
@@ -123,7 +129,9 @@ class Config {
 
 function decrypt_done(err) {
   g_is_ready=true;
-  g_queue.forEach((done) => setImmediate(done));
+  g_queue.forEach((done) => {
+    setImmediate(() => {done(err);})
+  });
   g_queue=[];
 }
 
