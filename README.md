@@ -30,3 +30,32 @@ This will create an encrypted version of `config.dev.json` called `config.dev.en
     npx config-set show config/config.dev.encrypted.json
 
 Prints the contents of `config.dev.encrypted.json` to stdout. 
+
+#### code initialization 
+
+Use `config.wait({configSet: 'configName'}, (err) => {})` to decrypt the configuration at runtime.
+
+```javascript
+
+const express = require('express');
+const config = require('node-config-sets');
+
+...
+
+const configSet = process.env.NODE_ENV || 'dev';
+
+config.wait({ configSet: configSet }, (err) => {
+  if(err) {
+    console.error('load config failed');
+    process.exit(-1);
+  } else {
+    console.log('load config ok');
+    const app = express();
+
+    ...
+
+    app.listen(port, () => console.log(`http listening on port ${config.port}`));
+  }
+});
+
+```
