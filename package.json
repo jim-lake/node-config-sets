@@ -1,6 +1,6 @@
 {
   "name": "node-config-sets",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Configuration sets for node.js programs.",
   "main": "index.js",
   "scripts": {
@@ -15,7 +15,6 @@
   },
   "license": "MIT",
   "dependencies": {
-    "lodash": "3.x",
-    "deep-extend": "*"
+    "deep-extend": "0.6.0"
   }
 }

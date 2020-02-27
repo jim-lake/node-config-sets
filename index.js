@@ -2,7 +2,6 @@
 
 const path = require('path');
 const deepExtend = require('deep-extend');
-const _ = require('lodash');
 
 const privateDataMap = new WeakMap();
 
@@ -49,16 +48,17 @@ class Config {
     const config_current_set = tryRequire('config/' + configSet + '.json',rootdir);
     const config_json = tryRequire('config.json',rootdir);
 
-    const config_env = _.pick(process.env,(v,k) => {
-      return k.indexOf(ENV_PREFIX) === 0;
-    });
-    const config_env_json = _.mapKeys(config_env,(v,k) => {
-      return k.slice(ENV_PREFIX.length).toLowerCase();
+    const config_env_json = {};
+    Object.keys(process.env).forEach(key => {
+      if (key.indexOf(ENV_PREFIX) === 0) {
+        const unprefixed_key = key.slice(ENV_PREFIX.length).toLowerCase();
+        config_env_json[unprefixed_key] = process.env[key];
+      }
     });
 
-    _.each(this,(v,k) => {
+    for (let k in this) {
       delete this[k];
-    });
+    }
     deepExtend(this,config_default,config_current_set,config_json,config_env_json);
     return this;
   }
