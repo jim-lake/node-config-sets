@@ -1,10 +1,11 @@
 {
   "name": "node-config-sets",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Configuration sets for node.js programs.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "pretty": "prettier --write index.js example",
+    "lint": "eslint index.js example"
   },
   "repository": {
     "type": "git",

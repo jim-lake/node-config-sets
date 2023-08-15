@@ -9,21 +9,15 @@ const ENV_PREFIX = 'NODE_CONFIG_SET_';
 
 class Config {
   constructor(args) {
-    this._configLoad(args);
+    this._configLoad(args || {});
   }
   _configLoad(args) {
-    let configSet = false;
-    if (args) {
-      configSet = args.configSet;
-    }
+    let configSet = args.configSet;
     if (!configSet) {
       configSet = process.env.NODE_CONFIG_SET || process.env.NODE_ENV || 'dev';
     }
 
-    let rootdir = false;
-    if (args) {
-      rootdir = args.rootdir;
-    }
+    let rootdir = args.rootdir;
     if (!rootdir) {
       let topModule = module;
       while (topModule.parent) {
