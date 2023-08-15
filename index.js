@@ -17,7 +17,7 @@ class Config {
       configSet = args.configSet;
     }
     if (!configSet) {
-      configSet = process.env.NODE_CONFIG_SET || process.env.NODE_ENV || "dev";
+      configSet = process.env.NODE_CONFIG_SET || process.env.NODE_ENV || 'dev';
     }
 
     let rootdir = false;
@@ -26,10 +26,11 @@ class Config {
     }
     if (!rootdir) {
       let topModule = module;
-      while(topModule.parent) {
+      while (topModule.parent) {
         topModule = topModule.parent;
       }
-      const match = topModule.paths[0].match(/(.*)\/node_modules/);
+      const match =
+        topModule.paths && topModule.paths[0].match(/(.*)\/node_modules/);
       if (match && match.length > 1) {
         rootdir = match[1];
       }
@@ -42,14 +43,18 @@ class Config {
       configSet,
       rootdir,
     };
-    privateDataMap.set(this,privateData);
+    privateDataMap.set(this, privateData);
 
-    const config_default = tryRequire('config/default.json',rootdir);
-    const config_current_set = tryRequire('config/' + configSet + '.json',rootdir);
-    const config_json = tryRequire('config.json',rootdir);
+    const config_default_default = args.configDefault || {};
+    const config_default = tryRequire('config/default.json', rootdir);
+    const config_current_set = tryRequire(
+      'config/' + configSet + '.json',
+      rootdir
+    );
+    const config_json = tryRequire('config.json', rootdir);
 
     const config_env_json = {};
-    Object.keys(process.env).forEach(key => {
+    Object.keys(process.env).forEach((key) => {
       if (key.indexOf(ENV_PREFIX) === 0) {
         const unprefixed_key = key.slice(ENV_PREFIX.length).toLowerCase();
         config_env_json[unprefixed_key] = process.env[key];
@@ -59,7 +64,14 @@ class Config {
     for (let k in this) {
       delete this[k];
     }
-    deepExtend(this,config_default,config_current_set,config_json,config_env_json);
+    deepExtend(
+      this,
+      config_default_default,
+      config_default,
+      config_current_set,
+      config_json,
+      config_env_json
+    );
     return this;
   }
   currentConfigSet() {
@@ -74,11 +86,11 @@ class Config {
   }
 }
 
-function tryRequire(file,rootdir) {
+function tryRequire(file, rootdir) {
   try {
-    const path_file = path.join(rootdir,file);
+    const path_file = path.join(rootdir, file);
     return require(path_file);
-  } catch(e) {
+  } catch (e) {
     return {};
   }
 }
