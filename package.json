@@ -2,10 +2,15 @@
   "name": "node-config-sets",
   "version": "0.0.4",
   "description": "Configuration sets for node.js programs.",
-  "main": "index.js",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist/*"
+  ],
   "scripts": {
-    "pretty": "prettier --write index.js example",
-    "lint": "eslint index.js example"
+    "pretty": "prettier --write src example",
+    "lint": "eslint src example",
+    "build": "rollup -c"
   },
   "repository": {
     "type": "git",
@@ -15,7 +20,19 @@
     "name": "Jim Lake"
   },
   "license": "MIT",
-  "dependencies": {
-    "deep-extend": "0.6.0"
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "^28.0.6",
+    "@rollup/plugin-node-resolve": "^16.0.1",
+    "@rollup/plugin-typescript": "^12.1.4",
+    "@types/node": "^24.0.13",
+    "@typescript-eslint/eslint-plugin": "^8.36.0",
+    "@typescript-eslint/parser": "^8.36.0",
+    "eslint": "^9.31.0",
+    "eslint-plugin-import": "^2.32.0",
+    "rollup": "^4.45.0",
+    "rollup-plugin-dts": "^6.2.1",
+    "tslib": "^2.8.1",
+    "tsx": "^4.20.3",
+    "typescript": "^5.8.3"
   }
 }

@@ -1,11 +1,11 @@
-'use strict';
+console.log('sub: here');
 
-console.log('here2');
+const config = require('../../dist/index');
 
-const config = require('node-config-sets');
+console.log('sub: Current config set:', config.currentConfigSet());
 
-console.log('Current config set:', config.currentConfigSet());
+console.log('sub: onfig:', config);
 
-console.log('config:', config);
+console.log('sub: JSON.stringify(config):', JSON.stringify(config));
 
-console.log('JSON.stringify(config):', JSON.stringify(config));
+exports.foo = 1;
