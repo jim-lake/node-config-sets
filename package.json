@@ -1,6 +1,6 @@
 {
   "name": "node-config-sets",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Configuration sets for node.js programs.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
